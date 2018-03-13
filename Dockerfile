@@ -66,6 +66,7 @@ RUN sh autoconf.sh
 RUN ./configure
 RUN make ${MAKE_JOBS}
 RUN make install
+RUN rm -r /usr/src/iverilog
 
 # Verilator
 ENV VERILATOR_VERSION=${VERILATOR_VERSION}
@@ -77,6 +78,7 @@ RUN autoconf
 RUN ./configure
 RUN make ${MAKE_JOBS}
 RUN make install
+RUN rm -r /usr/src/verilator
 
 # Yosys
 WORKDIR /usr/src/yosys
@@ -85,6 +87,7 @@ RUN git checkout yosys-${YOSYS_VERSION}
 RUN make config-gcc
 RUN make ${MAKE_JOBS}
 RUN make install
+RUN rm -r /usr/src/yosys
 
 # Cocotb
 RUN git clone https://github.com/potentialventures/cocotb.git
