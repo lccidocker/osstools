@@ -54,11 +54,7 @@ RUN pip install --upgrade pip
 
 # FuseSoC
 ENV FUSESOC_VERSION=${FUSESOC_VERSION}
-
-WORKDIR /usr/src/fusesoc
-RUN git clone https://github.com/olofk/fusesoc.git .
-RUN git checkout ${FUSESOC_VERSION}
-RUN pip install -e .
+RUN pip install fusesoc==${FUSESOC_VERSION}
 
 # Icarus Verilog
 ENV ICARUS_VERILOG_VERSION=${ICARUS_VERILOG_VERSION}
