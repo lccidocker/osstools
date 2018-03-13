@@ -52,7 +52,8 @@ RUN apt-get update && apt-get install -y \
     python2.7-dev libyaml-dev libyaml-dev python-pip python-yaml git libelf-dev \
     autoconf gperf bison flex build-essential clang libreadline-dev gawk tcl-dev \
     libffi-dev mercurial graphviz xdot pkg-config python3 virtualenv python3-venv \
-    python3-dev openjdk-8-jre wget
+    python3-dev openjdk-8-jre wget && \
+    rm -rf /var/lib/apt/lists/*
 
 RUN pip install --upgrade pip
 
@@ -64,34 +65,34 @@ RUN pip install fusesoc==${FUSESOC_VERSION}
 ENV ICARUS_VERILOG_VERSION=${ICARUS_VERILOG_VERSION}
 
 WORKDIR /usr/src/iverilog
-RUN git clone https://github.com/steveicarus/iverilog.git .
-RUN git checkout v${ICARUS_VERILOG_VERSION}
-RUN sh autoconf.sh
-RUN ./configure
-RUN make ${MAKE_JOBS}
-RUN make install
-RUN rm -r /usr/src/iverilog
+RUN git clone https://github.com/steveicarus/iverilog.git . && \
+    git checkout v${ICARUS_VERILOG_VERSION} && \
+    sh autoconf.sh && \
+    ./configure && \
+    make ${MAKE_JOBS} && \
+    make install && \
+     rm -r /usr/src/iverilog
 
 # Verilator
 ENV VERILATOR_VERSION=${VERILATOR_VERSION}
 
 WORKDIR /usr/src/verilator
-RUN git clone http://git.veripool.org/git/verilator .
-RUN git checkout verilator_`echo "${VERILATOR_VERSION}" | tr '.' '_'`
-RUN autoconf
-RUN ./configure
-RUN make ${MAKE_JOBS}
-RUN make install
-RUN rm -r /usr/src/verilator
+RUN git clone http://git.veripool.org/git/verilator . && \
+    git checkout verilator_`echo "${VERILATOR_VERSION}" | tr '.' '_'` && \
+    autoconf && \
+    ./configure && \
+    make ${MAKE_JOBS} && \
+    make install && \
+    rm -r /usr/src/verilator
 
 # Yosys
 WORKDIR /usr/src/yosys
-RUN git clone http://github.com/cliffordwolf/yosys.git .
-RUN git checkout yosys-${YOSYS_VERSION}
-RUN make config-gcc
-RUN make ${MAKE_JOBS}
-RUN make install
-RUN rm -r /usr/src/yosys
+RUN git clone http://github.com/cliffordwolf/yosys.git . && \
+    git checkout yosys-${YOSYS_VERSION} && \
+    make config-gcc && \
+    make ${MAKE_JOBS} && \
+    make install && \
+    rm -r /usr/src/yosys
 
 # Cocotb
 RUN git clone https://github.com/potentialventures/cocotb.git
@@ -107,13 +108,13 @@ RUN pip install tap.py==${TAPPY_VERSION}
 # Cross-compilers
 # RISC-V
 WORKDIR /tmp
-RUN wget https://static.dev.sifive.com/dev-tools/riscv64-unknown-elf-gcc-${RISCV_VERSION}-x86_64-linux-centos6.tar.gz
-RUN tar -xzf riscv64-unknown-elf-gcc-${RISCV_VERSION}-x86_64-linux-centos6.tar.gz -C /opt
-RUN rm riscv64-unknown-elf-gcc-${RISCV_VERSION}-x86_64-linux-centos6.tar.gz
+RUN wget https://static.dev.sifive.com/dev-tools/riscv64-unknown-elf-gcc-${RISCV_VERSION}-x86_64-linux-centos6.tar.gz && \
+    tar -xzf riscv64-unknown-elf-gcc-${RISCV_VERSION}-x86_64-linux-centos6.tar.gz -C /opt && \
+    rm riscv64-unknown-elf-gcc-${RISCV_VERSION}-x86_64-linux-centos6.tar.gz
 ENV PATH="/opt/riscv64-unknown-elf-gcc-${RISCV_VERSION}-x86_64-linux-centos6/bin:${PATH}"
 
 # OpenRISC
-RUN wget https://github.com/openrisc/newlib/releases/download/v${OPENRISC_VERSION}/or1k-elf-multicore_gcc5.3.0_binutils2.26_newlib${OPENRISC_VERSION}_gdb7.11.tgz
-RUN tar -xzf or1k-elf-multicore_gcc5.3.0_binutils2.26_newlib${OPENRISC_VERSION}_gdb7.11.tgz -C /opt
-RUN rm or1k-elf-multicore_gcc5.3.0_binutils2.26_newlib${OPENRISC_VERSION}_gdb7.11.tgz
+RUN wget https://github.com/openrisc/newlib/releases/download/v${OPENRISC_VERSION}/or1k-elf-multicore_gcc5.3.0_binutils2.26_newlib${OPENRISC_VERSION}_gdb7.11.tgz && \
+    tar -xzf or1k-elf-multicore_gcc5.3.0_binutils2.26_newlib${OPENRISC_VERSION}_gdb7.11.tgz -C /opt && \
+    rm or1k-elf-multicore_gcc5.3.0_binutils2.26_newlib${OPENRISC_VERSION}_gdb7.11.tgz
 ENV PATH="/opt/or1k-elf-multicore/bin:${PATH}"
