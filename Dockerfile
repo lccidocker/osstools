@@ -48,7 +48,7 @@ RUN apt-get update && apt-get install -y \
     python2.7-dev libyaml-dev libyaml-dev python-pip python-yaml git libelf-dev \
     autoconf gperf bison flex build-essential clang libreadline-dev gawk tcl-dev \
     libffi-dev mercurial graphviz xdot pkg-config python3 virtualenv python3-venv \
-    python3-dev
+    python3-dev openjdk-8-jre
 
 # FuseSoC
 ENV FUSESOC_VERSION=${FUSESOC_VERSION}
