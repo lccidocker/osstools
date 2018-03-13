@@ -44,11 +44,15 @@ ARG COCOTB_VERSION=561511a
 ARG PYTEST_VERSION=3.4.2
 ARG TAPPY_VERSION=2.2
 
+# Cross-Compilers
+ARG RISCV_VERSION=20171231
+ARG OPENRISC_VERSION=2.4.0
+
 RUN apt-get update && apt-get install -y \
     python2.7-dev libyaml-dev libyaml-dev python-pip python-yaml git libelf-dev \
     autoconf gperf bison flex build-essential clang libreadline-dev gawk tcl-dev \
     libffi-dev mercurial graphviz xdot pkg-config python3 virtualenv python3-venv \
-    python3-dev openjdk-8-jre
+    python3-dev openjdk-8-jre wget
 
 RUN pip install --upgrade pip
 
@@ -99,3 +103,17 @@ ENV COCOTB=/tmp/cocotb
 # pytest, nose and tappy
 RUN pip install pytest==${PYTEST_VERSION}
 RUN pip install tap.py==${TAPPY_VERSION}
+
+# Cross-compilers
+# RISC-V
+WORKDIR /tmp
+RUN wget https://static.dev.sifive.com/dev-tools/riscv64-unknown-elf-gcc-${RISCV_VERSION}-x86_64-linux-centos6.tar.gz
+RUN tar -xzf riscv64-unknown-elf-gcc-${RISCV_VERSION}-x86_64-linux-centos6.tar.gz -C /opt
+RUN rm riscv64-unknown-elf-gcc-${RISCV_VERSION}-x86_64-linux-centos6.tar.gz
+ENV PATH="/opt/riscv64-unknown-elf-gcc-${RISCV_VERSION}-x86_64-linux-centos6/bin:${PATH}"
+
+# OpenRISC
+RUN wget https://github.com/openrisc/newlib/releases/download/v${OPENRISC_VERSION}/or1k-elf-multicore_gcc5.3.0_binutils2.26_newlib${OPENRISC_VERSION}_gdb7.11.tgz
+RUN tar -xzf or1k-elf-multicore_gcc5.3.0_binutils2.26_newlib${OPENRISC_VERSION}_gdb7.11.tgz -C /opt
+RUN rm or1k-elf-multicore_gcc5.3.0_binutils2.26_newlib${OPENRISC_VERSION}_gdb7.11.tgz
+ENV PATH="/opt/or1k-elf-multicore/bin:${PATH}"
