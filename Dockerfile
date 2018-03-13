@@ -27,6 +27,8 @@ LABEL Description="This is the default LibreCores CI Image" Vendor="Librecores" 
 
 USER root
 
+ARG MAKE_JOBS=-j1
+
 # Package Managers
 ARG FUSESOC_VERSION=1.7
 
@@ -63,7 +65,7 @@ RUN git clone https://github.com/steveicarus/iverilog.git .
 RUN git checkout v${ICARUS_VERILOG_VERSION}
 RUN sh autoconf.sh
 RUN ./configure
-RUN make
+RUN make ${MAKE_JOBS}
 RUN make install
 
 # Verilator
@@ -74,7 +76,7 @@ RUN git clone http://git.veripool.org/git/verilator .
 RUN git checkout verilator_`echo "${VERILATOR_VERSION}" | tr '.' '_'`
 RUN autoconf
 RUN ./configure
-RUN make
+RUN make ${MAKE_JOBS}
 RUN make install
 
 # Yosys
@@ -82,7 +84,7 @@ WORKDIR /usr/src/yosys
 RUN git clone http://github.com/cliffordwolf/yosys.git .
 RUN git checkout yosys-${YOSYS_VERSION}
 RUN make config-gcc
-RUN make
+RUN make ${MAKE_JOBS}
 RUN make install
 
 # Cocotb
